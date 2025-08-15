@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.svc.auth.name }}
+  namespace: {{ .Values.deployment.auth.namespace }}
+  labels:
+    app: {{ .Values.svc.auth.labels.app }}
+spec:
+  selector:
+    app: {{ .Values.deployment.auth.labels.app }}
+  ports:
+    - name: http
+      port: {{ .Values.svc.auth.ports }}
+      targetPort: {{ .Values.svc.auth.targetPort }}

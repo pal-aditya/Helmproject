@@ -1,0 +1,17 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+  namespace: {{ .Values.deployment.auth.namespace }}
+spec:
+  instances: 3
+  storage:
+    size: 1Gi
+  bootstrap:
+    initdb:
+      database: {{ .Values.deployment.auth.postgres.db }}
+      owner: {{ .Values.deployment.auth.postgres.username }}
+      postInitApplicationSQLRefs:
+        configMapRefs:
+          - name: init-sql
+            key: init.sql

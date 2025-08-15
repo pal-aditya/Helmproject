@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.svc.game.name }}
+  namespace: {{ .Values.deployment.game.namespace }}
+  labels:
+    app: gamesvc
+spec:
+  selector:
+    app: {{ .Values.deployment.game.labels.app }}
+  ports:
+    - name: http
+      port: {{ .Values.svc.game.ports }}
+      targetPort: {{ .Values.svc.game.targetPort }}

@@ -1,0 +1,21 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ .Values.gateway.httproutename }}
+  namespace: {{ .Values.deployment.auth.namespace }}
+spec:
+  parentRefs:
+    - name: {{ .Values.gateway.name }}
+      namespace: kgateway-system
+  hostnames:
+    - {{ .Values.gateway.dnshost }}
+  rules:
+    - matches:
+        - path:
+            type: {{ .Values.gateway.gatewayroutetype }}
+            value: {{ .Values.gateway.gatewayroutepath }}
+      backendRefs:
+        - kind: Service
+          name: {{ .Values.svc.front.name }}
+          namespace: {{ .Values.deployment.frontend.namespace }}
+          port: 80

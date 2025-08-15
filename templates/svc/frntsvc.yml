@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.svc.front.name }}
+  namespace: {{ .Values.deployment.frontend.namespace }}
+spec:
+  selector:
+    app: {{ .Values.deployment.frontend.labels.app }}
+  ports:
+    - port: {{ .Values.svc.front.port }}
+      targetPort: {{ .Values.svc.front.targetPort }}
+  type: {{ .Values.svc.front.type }}

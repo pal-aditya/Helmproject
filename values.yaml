@@ -1,0 +1,84 @@
+deployment:
+  auth:
+    name: auth
+    namespace: helm
+    labels:
+      app: auth-service
+    image:
+      repository: aditya090/projectk8s
+      tag: auth
+      pullPolicy: Always
+    replicaCount: 2
+    container:
+      name: authpod
+      ports: 8080
+      labels:
+        app: auth-service
+    postgres:
+      # single source of truth for DB connection
+      host: "postgres-rw.sins.svc.cluster.local"
+      db: "dbname"
+      username: "user"
+      secretName: "postgres-app"
+      usernameKey: "username"
+      passwordKey: "password"
+    strategy:
+      type: RollingUpdate
+      maxSurge: 1
+      maxUnavailable: 2
+
+  frontend:
+    name: frontend
+    namespace: helm
+    labels:
+      app: frontend
+    image:
+      repository: aditya090/projectk8s
+      tag: frontend-v5
+      pullPolicy: Always
+    replicaCount: 2
+    container:
+      name: frontend-service
+      ports: 80
+
+  game:
+    name: game-service
+    namespace: helm
+    labels:
+      app: game-service
+    replicaCount: 2
+    container:
+      image: aditya090/projectk8s:game
+      pullPolicy: Always
+      name: gamepod
+      ports: 8081
+
+svc:
+  auth:
+    name: auth-service
+    ports: 8080
+    targetPort: 8080
+    labels:
+      app: auth-service
+  front:
+    name: frontend
+    port: 80
+    targetPort: 80
+    type: ClusterIP
+  game:
+    name: game-service
+    ports: 8081
+    targetPort: 8081
+
+gateway:
+  name: gateway
+  dnshost: "sillybeings.com"
+  certname: sins-tls
+  httproutname: frontend-redirect
+  httproutename: frontend-route
+  gatewayroutetype: PathPrefix
+  gatewayroutepath: "/"
+
+tlscert:
+  name: letsencrypt-prod
+  email: adityapal3726@gmail.com

@@ -1,0 +1,15 @@
+apiVersion: v2
+name: nextgeninfo
+description: >
+  We are deploying the Microservices (frontend,auth,games)
+type: application
+version: 0.1.0
+appVersion: 0.25.0
+keywords:
+  - blunt
+  - aditya
+  - alpha
+maintainers:
+  - name: bluntAditya
+    email: adityapal3726@gmail.com
+

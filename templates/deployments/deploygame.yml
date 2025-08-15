@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deployment.game.name }}
+  namespace: {{ .Values.deployment.game.namespace }}
+  labels:
+    app: {{ .Values.deployment.game.labels.app }}
+spec:
+  replicas: {{ .Values.deployment.game.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.deployment.game.labels.app }}
+  strategy:
+    type: {{ .Values.deployment.auth.strategy.type }}
+    rollingUpdate:
+      maxSurge: {{ .Values.deployment.auth.strategy.maxSurge }}
+      maxUnavailable: {{ .Values.deployment.auth.strategy.maxUnavailable }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.deployment.game.labels.app }}
+    spec:
+      containers:
+        - name: {{ .Values.deployment.game.container.name }}
+          image: {{ .Values.deployment.game.container.image }}
+          imagePullPolicy: {{ .Values.deployment.game.container.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.deployment.game.container.ports }}
+          env:
+            - name: POSTGRES_HOST
+              value: {{ .Values.deployment.auth.postgres.host | quote }}
+            - name: POSTGRES_DB
+              value: {{ .Values.deployment.auth.postgres.db | quote }}
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.deployment.auth.postgres.secretName }}
+                  key: {{ .Values.deployment.auth.postgres.usernameKey }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.deployment.auth.postgres.secretName }}
+                  key: {{ .Values.deployment.auth.postgres.passwordKey }}
