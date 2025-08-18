@@ -77,7 +77,7 @@ kubectl patch clusterissuer letsencrypt-prod \
         "app.kubernetes.io/managed-by": "Helm"
       },
       "annotations": {
-        "meta.helm.sh/release-name": "bashshie",
+        "meta.helm.sh/release-name": "<release-name>",
         "meta.helm.sh/release-namespace": "helm"
       }
     }
@@ -85,6 +85,8 @@ kubectl patch clusterissuer letsencrypt-prod \
 ```
 
 ---
+
+## Then Do the helm install <release-name> <path/to/directory> -n <namespace you've mentioned in values.yml> --create-namespace 
 
 ## Summary
 
