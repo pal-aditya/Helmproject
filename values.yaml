@@ -16,9 +16,9 @@ deployment:
         app: auth-service
     postgres:
       # single source of truth for DB connection
-      host: "postgres-rw.sins.svc.cluster.local"
+      host: "postgres-rw" #.{{ .Release.Namespace }}.svc.cluster.local"
       db: "dbname"
-      username: "user"
+      username: "alpha"
       secretName: "postgres-app"
       usernameKey: "username"
       passwordKey: "password"
@@ -34,7 +34,7 @@ deployment:
       app: frontend
     image:
       repository: aditya090/projectk8s
-      tag: frontend-v5
+      tag: v6
       pullPolicy: Always
     replicaCount: 2
     strategy:
@@ -87,3 +87,13 @@ gateway:
 tlscert:
   name: letsencrypt-prod
   email: adityapal3726@gmail.com
+
+
+#cert-manager:
+#  installCRDs: true
+#gateway-api:
+#  enabled: true
+#cnpg:
+#  enabled: true
+#cert-manager:
+#  enabled: true

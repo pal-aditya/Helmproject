@@ -23,9 +23,17 @@ spec:
         app: {{ .Values.deployment.frontend.labels.app }}
     spec:
       containers:
-      - image: {{ .Values.deployment.frontend.container.image }}
+      - image: {{ .Values.deployment.frontend.image.repository }}:{{ .Values.deployment.frontend.image.tag }}
         name: {{ .Values.deployment.frontend.container.name }}
         imagePullPolicy: {{ .Values.deployment.frontend.container.imagePullPolicy }}
         ports:
           - containerPort: {{ .Values.deployment.frontend.container.ports }}
+        volumeMounts:
+          - name: nginx-config
+            mountPath: /etc/nginx/conf.d/default.conf
+            subPath: nginx.conf
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: frontend-nginx-config
 #status: {}

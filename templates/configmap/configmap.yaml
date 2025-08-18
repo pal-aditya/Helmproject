@@ -11,17 +11,17 @@ data:
       username VARCHAR(255) UNIQUE NOT NULL,
       password_hash BYTEA NOT NULL
     );
-    ALTER TABLE users OWNER TO "user";
+    ALTER TABLE users OWNER TO {{ .Values.deployment.auth.postgres.username | quote }};
 
-    -- Create table for Snake game scores
+    -- Snake game scores table
     CREATE TABLE IF NOT EXISTS snake_high_scores (
       id SERIAL PRIMARY KEY,
       user_id INTEGER REFERENCES users(id),
       score INTEGER DEFAULT 0
     );
-    ALTER TABLE snake_high_scores OWNER TO "user";
+    ALTER TABLE snake_high_scores OWNER TO {{ .Values.deployment.auth.postgres.username | quote }};
 
-    -- Create table for other game stats (Tic-Tac-Toe and Rock-Paper-Scissors)
+    -- Other games stats
     CREATE TABLE IF NOT EXISTS games_stats (
       id SERIAL PRIMARY KEY,
       user_id INTEGER REFERENCES users(id),
@@ -29,30 +29,22 @@ data:
       wins INTEGER DEFAULT 0,
       losses INTEGER DEFAULT 0
     );
-    ALTER TABLE games_stats OWNER TO "user";
+    ALTER TABLE games_stats OWNER TO {{ .Values.deployment.auth.postgres.username | quote }};
 
-    -- Give 'user' full rights
-    GRANT ALL PRIVILEGES ON TABLE users TO "user";
-    GRANT ALL PRIVILEGES ON TABLE snake_high_scores TO "user";
-    GRANT ALL PRIVILEGES ON TABLE games_stats TO "user";
+    -- Grant privileges dynamically
+    GRANT ALL PRIVILEGES ON TABLE users TO {{ .Values.deployment.auth.postgres.username | quote }};
+    GRANT ALL PRIVILEGES ON TABLE snake_high_scores TO {{ .Values.deployment.auth.postgres.username | quote }};
+    GRANT ALL PRIVILEGES ON TABLE games_stats TO {{ .Values.deployment.auth.postgres.username | quote }};
 
-    -- Allow access to sequences
-    GRANT USAGE, SELECT, UPDATE ON SEQUENCE users_id_seq TO "user";
-    GRANT USAGE, SELECT, UPDATE ON SEQUENCE snake_high_scores_id_seq TO "user";
-    GRANT USAGE, SELECT, UPDATE ON SEQUENCE games_stats_id_seq TO "user";
+    GRANT USAGE, SELECT, UPDATE ON SEQUENCE users_id_seq TO {{ .Values.deployment.auth.postgres.username | quote }};
+    GRANT USAGE, SELECT, UPDATE ON SEQUENCE snake_high_scores_id_seq TO {{ .Values.deployment.auth.postgres.username | quote }};
+    GRANT USAGE, SELECT, UPDATE ON SEQUENCE games_stats_id_seq TO {{ .Values.deployment.auth.postgres.username | quote }};
 
-    -- Make sure the app user can use the database
-    GRANT CONNECT ON DATABASE dbname TO "user";
+    GRANT CONNECT ON DATABASE {{ .Values.deployment.auth.postgres.db | quote }} TO {{ .Values.deployment.auth.postgres.username | quote }};
+    GRANT USAGE ON SCHEMA public TO {{ .Values.deployment.auth.postgres.username | quote }};
 
-    -- Make sure the app user can use the public schema
-    GRANT USAGE ON SCHEMA public TO "user";
+    GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO {{ .Values.deployment.auth.postgres.username | quote }};
+    GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA public TO {{ .Values.deployment.auth.postgres.username | quote }};
 
-    -- Give full rights on all existing tables
-    GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "user";
-
-    -- Give full rights on all existing sequences
-    GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA public TO "user";
-
-    -- Ensure future tables/sequences also get these rights automatically
-    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO "user";
-    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT, UPDATE ON SEQUENCES TO "user";
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO {{ .Values.deployment.auth.postgres.username | quote }};
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT, UPDATE ON SEQUENCES TO {{ .Values.deployment.auth.postgres.username | quote }};

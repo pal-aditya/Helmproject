@@ -28,7 +28,7 @@ spec:
             - containerPort: {{ .Values.deployment.auth.container.ports }}
           env:
             - name: POSTGRES_HOST
-              value: {{ .Values.deployment.auth.postgres.host | quote }}
+              value: {{ .Values.deployment.auth.postgres.host }}.{{ .Release.Namespace }}.svc.cluster.local #{{ .Values.deployment.auth.postgres.host | quote }}
             - name: POSTGRES_DB
               value: {{ .Values.deployment.auth.postgres.db | quote }}
             - name: POSTGRES_USER
