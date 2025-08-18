@@ -34,7 +34,7 @@ deployment:
       app: frontend
     image:
       repository: aditya090/projectk8s
-      tag: v6
+      tag: frontend-v6
       pullPolicy: Always
     replicaCount: 2
     strategy:
