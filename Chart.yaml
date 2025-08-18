@@ -1,4 +1,4 @@
-apiVersion: v2
+\apiVersion: v2
 name: nextgeninfo
 description: >
   We are deploying the Microservices (frontend,auth,games)
@@ -12,4 +12,23 @@ keywords:
 maintainers:
   - name: bluntAditya
     email: adityapal3726@gmail.com
+#dependencies:
+dependencies:
+  - name: kgateway
+    version: 2.0.4   # or the latest shown by `helm search repo kgateway`
+    repository: "https://kgateway.github.io/helm-charts"
 
+  - name: gateway-api
+    version: 0.1.0
+    repository: "file://charts/gateway-api"
+    namespace: gateway-system
+
+  - name: cnpg
+    version: 0.1.0
+    repository: "file://charts/cnpg"
+    namespace: cnpg
+
+  - name: cert-manager
+    version: 0.1.0
+    repository: "file://charts/cert-manager"
+    namespace: cert-manager

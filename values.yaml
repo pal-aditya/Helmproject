@@ -37,6 +37,11 @@ deployment:
       tag: frontend-v5
       pullPolicy: Always
     replicaCount: 2
+    strategy:
+      type: RollingUpdate
+      maxSurge: 1
+      maxUnavailable: 2
+
     container:
       name: frontend-service
       ports: 80

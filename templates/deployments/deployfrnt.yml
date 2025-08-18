@@ -1,28 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.deployment.frontend.name }}
+#  creationTimestamp: null
   namespace: {{ .Values.deployment.frontend.namespace }}
   labels:
     app: {{ .Values.deployment.frontend.labels.app }}
+  name: {{ .Values.deployment.frontend.name }}
 spec:
-  replicas: {{ .Values.deployment.frontend.replicaCount }}
+  replicas: {{ .Values.deployment.frontend.replicas }}
   selector:
     matchLabels:
       app: {{ .Values.deployment.frontend.labels.app }}
   strategy:
-    type: RollingUpdate
+    type: {{ .Values.deployment.frontend.strategy.type }}
     rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 2
+      maxSurge: {{ .Values.deployment.frontend.strategy.maxSurge }}     #How many extra pods can be deployed
+      maxUnavailable: {{ .Values.deployment.frontend.strategy.maxUnavailable }} #How many max pods can be deleted
   template:
     metadata:
+      creationTimestamp: null
       labels:
         app: {{ .Values.deployment.frontend.labels.app }}
     spec:
       containers:
-        - name: {{ .Values.deployment.frontend.container.name }}
-          image: {{ .Values.deployment.frontend.image.repository }}:{{ .Values.deployment.frontend.image.tag }}
-          imagePullPolicy: {{ .Values.deployment.frontend.image.pullPolicy }}
-          ports:
-            - containerPort: {{ .Values.deployment.frontend.container.ports }}
+      - image: {{ .Values.deployment.frontend.container.image }}
+        name: {{ .Values.deployment.frontend.container.name }}
+        imagePullPolicy: {{ .Values.deployment.frontend.container.imagePullPolicy }}
+        ports:
+          - containerPort: {{ .Values.deployment.frontend.container.ports }}
+#status: {}
