@@ -83,7 +83,20 @@ kubectl patch clusterissuer letsencrypt-prod \
     }
   }'
 ```
+---
+## Use the terraform to install prerequisites 
 
+Integrated the terraform file:
+
+#### beforehand please write your own terraform configurations based on your setup
+
+```sh
+terraform init
+terraform apply --auto-approve
+```
+
+### Patch cert-manager Deployment
+---
 ---
 
 ## Then Do the helm install <release-name> <path/to/directory> -n <namespace you've mentioned in values.yml> --create-namespace 
